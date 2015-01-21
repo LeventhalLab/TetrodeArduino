@@ -11,8 +11,10 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // to motor port #2 (M3 and M4)
 Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
-boolean waiting = true;
 const int switch1 = 12;
+int forwardRot = 1;
+int backwardRot = 1;
+boolean backToStart = false;
 
 void setup() {
   pinMode(switch1, INPUT);
@@ -23,7 +25,23 @@ void setup() {
 
 void loop() {
   if(digitalRead(switch1) == HIGH) {
-    myMotor->step(200*1, FORWARD, DOUBLE); 
-    myMotor->step(200*1, BACKWARD, DOUBLE);
+    delay(500); //kind of a debounce
+    for(int i=1;i<200*forwardRot;i++) {
+      if(digitalRead(switch1) == HIGH) {
+        backToStart = true;
+        break;
+      }
+      myMotor->step(i, FORWARD, DOUBLE); 
+      //myMotor->step(i, BACKWARD, DOUBLE);
+    }
+    for(int i=1;i<200*backwardRot;i++) {
+      if(digitalRead(switch1) == HIGH || backToStart) {
+        break;
+      }
+      myMotor->step(i, BACKWARD, DOUBLE); 
+      //myMotor->step(i, BACKWARD, DOUBLE);
+    }
   }
+  backToStart = false;
+  delay(500); //kind of a debounce
 }
