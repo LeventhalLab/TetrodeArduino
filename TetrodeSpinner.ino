@@ -14,7 +14,6 @@ Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 const int switch1 = 12;
 int forwardRot = 1;
 int backwardRot = 1;
-boolean backToStart = false;
 
 void setup() {
   pinMode(switch1, INPUT);
@@ -25,23 +24,7 @@ void setup() {
 
 void loop() {
   if(digitalRead(switch1) == HIGH) {
-    delay(500); //kind of a debounce
-    for(int i=1;i<200*forwardRot;i++) {
-      if(digitalRead(switch1) == HIGH) {
-        backToStart = true;
-        break;
-      }
-      myMotor->step(i, FORWARD, DOUBLE); 
-      //myMotor->step(i, BACKWARD, DOUBLE);
-    }
-    for(int i=1;i<200*backwardRot;i++) {
-      if(digitalRead(switch1) == HIGH || backToStart) {
-        break;
-      }
-      myMotor->step(i, BACKWARD, DOUBLE); 
-      //myMotor->step(i, BACKWARD, DOUBLE);
-    }
+    myMotor->step(200*forwardRot, FORWARD, SINGLE); 
+    myMotor->step(200*backwardRot, BACKWARD, SINGLE);
   }
-  backToStart = false;
-  delay(500); //kind of a debounce
 }
