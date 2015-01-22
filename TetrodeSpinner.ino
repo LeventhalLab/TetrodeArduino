@@ -12,20 +12,26 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
 const int switch1 = 12;
-int forwardRot = 1;
-int backwardRot = 1;
+int forwardRot = 20;
+int backwardRot = 0;
 
 void setup() {
   pinMode(switch1, INPUT);
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
-  myMotor->setSpeed(750);  // not sure what max rpm is
+  //myMotor->setSpeed(500);  // not sure what max rpm is
 }
 
 void loop() {
   if(digitalRead(switch1) == HIGH) {
-    //is SINGLE less shaky than DOUBLE? probably
-    myMotor->step(200*forwardRot, FORWARD, SINGLE); 
-    myMotor->step(200*backwardRot, BACKWARD, SINGLE);
+      //single vs double doesn't matter
+      //using RPM isn't as smooth, this implements a hardware step, which
+      //just gives us better control over everything
+      for(int i=1;i<forwardRot*200;i++) {
+        myMotor->onestep(FORWARD,SINGLE);
+      }
+      for(int i=1;i<backwardRot*200;i++) {
+        myMotor->onestep(BACKWARD,SINGLE);
+      }
   }
 }
