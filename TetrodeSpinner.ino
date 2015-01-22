@@ -19,11 +19,12 @@ void setup() {
   pinMode(switch1, INPUT);
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
-  myMotor->setSpeed(750);  // 10 rpm   
+  myMotor->setSpeed(750);  // not sure what max rpm is
 }
 
 void loop() {
   if(digitalRead(switch1) == HIGH) {
+    //is SINGLE less shaky than DOUBLE? probably
     myMotor->step(200*forwardRot, FORWARD, SINGLE); 
     myMotor->step(200*backwardRot, BACKWARD, SINGLE);
   }
